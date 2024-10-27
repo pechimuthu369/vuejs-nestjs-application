@@ -1,15 +1,31 @@
 <template>
-  <div class="welcomepage">
+  <div v-if="isAuthenticated" class="welcome-container">
+    <br>
     <h2>Welcome to the application</h2>
-    <p>Hello, user!</p>
+    <br>
+    <p>Welcome, {{ username }}!</p>
+    <br>
     <button @click="signOut">Sign Out</button>
+  </div>
+  <div v-else>
+    <p>Please log in.</p>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { mapState } from 'vuex';
 
 export default {
+  computed: {
+    ...mapState(['user']),
+    isAuthenticated() {
+      return this.user.isAuthenticated;
+    },
+    username() {
+      return this.user.username;
+    },
+  },
   name: 'WelcomePage',
   methods: {
     async signOut() {
@@ -18,16 +34,18 @@ export default {
         // await axios.post('/auth/signout');
         
         // Remove the token from local storage
-        localStorage.removeItem('token');
-
-        // Redirect to the sign-in page
-        this.$router.push('/signin');
+        localStorage.removeItem('token');   
       } catch (error) {
         console.error('Error during sign out:', error);
         // Even if there's an error, we should still remove the token and redirect
         localStorage.removeItem('token');
-        this.$router.push('/signin');
       }
+      this.$store.commit('setUser', {
+            username: null,
+            isAuthenticated: false,
+          });
+       // Redirect to the home page
+       this.$router.push('/');
     }
   },
   async mounted() {
@@ -43,6 +61,12 @@ export default {
 </script>
 
 <style scoped>
+.welcome-container {
+  justify-content: center;
+  align-items: center;
+  background-color: 
+ #f0f0f0;
+}
 .application {
   max-width: 600px;
   margin: 0 auto;

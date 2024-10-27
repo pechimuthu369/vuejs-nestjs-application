@@ -6,7 +6,7 @@ import WelcomePage from '@/components/WelcomePage.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/signin'
+    redirect: '/HelloWorld'
   },
   {
     path: '/signup',
